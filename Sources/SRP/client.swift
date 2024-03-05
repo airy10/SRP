@@ -123,7 +123,7 @@ public struct SRPClient<H: HashFunction> {
 
 extension SRPClient {
     /// return shared secret given the username, password, B value and salt from the server
-    func calculateSharedSecret(message: [UInt8], salt: [UInt8], clientKeys: SRPKeyPair, serverPublicKey: SRPKey) throws -> BigNum {
+    public func calculateSharedSecret(message: [UInt8], salt: [UInt8], clientKeys: SRPKeyPair, serverPublicKey: SRPKey) throws -> BigNum {
         guard serverPublicKey.number % configuration.N != BigNum(0) else { throw SRPClientError.nullServerKey }
 
         // calculate u = H(clientPublicKey | serverPublicKey)
