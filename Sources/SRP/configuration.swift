@@ -11,25 +11,29 @@ public struct SRPConfiguration<H: HashFunction> {
     public let k: BigNum
     /// size in bytes of N
     public let sizeN: Int
-    
+    /// true if "g" should be padded
+    public let shouldPadG: Bool
+
     /// Initialise SRPConfiguration with known safe prime
     /// - Parameter prime: enum indicating size of prime
-    public init(_ prime: Prime) {
+    public init(_ prime: Prime, shouldPadG: Bool = false) {
         self.N = prime.group
         self.sizeN = Int(self.N.numBits() + 7) / 8
         self.g = prime.generator
         self.k = BigNum(bytes: [UInt8](H.hash(data: self.N.bytes + SRP<H>.pad(self.g.bytes, to: sizeN))))
+        self.shouldPadG = shouldPadG
     }
     
     /// Initialise SRPConfiguration with your own prime and multiplicative group generator
     /// - Parameters:
     ///   - N: Large prime
     ///   - g: multiplicative group generator (usually 2)
-    public init(N: BigNum, g: BigNum) {
+    public init(N: BigNum, g: BigNum, shouldPadG: Bool = false) {
         self.N = N
         self.sizeN = Int(self.N.numBits() + 7) / 8
         self.g = g
         self.k = BigNum(bytes: [UInt8](H.hash(data: self.N.bytes + SRP<H>.pad(self.g.bytes, to: sizeN))))
+        self.shouldPadG = shouldPadG
     }
     
     public enum Prime {
